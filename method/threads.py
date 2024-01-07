@@ -201,7 +201,7 @@ class Worker_Thread(QThread):
         self.message_signal.emit("开始刷体力")
         # 激活窗口，使置顶
         self.coa_window.activate()
-
+        self.message_signal.emit("功能还在开发中...")
         # 正常退出
         print("退出刷体力")
         self.message_signal.emit("退出刷体力")
@@ -249,17 +249,18 @@ class Worker_Thread(QThread):
                     press_key_once("esc")
                     click(self.parent_absolute + '\\image\\receiving_resources\\fleet.png', 2)
                     click(self.parent_absolute + '\\image\\receiving_resources\\meeting_place.png', 2)
-                    # 如果已经打卡
+                    # 如果未打卡
                     if not is_exist(self.parent_absolute + '\\image\\receiving_resources\\already_punch_card.png'):
                         click(self.parent_absolute + '\\image\\receiving_resources\\punch_card.png', 2)
                         click(self.parent_absolute + '\\image\\receiving_resources\\buy_success.png', 2)
                         # press_key_once("esc")
                         press_key_once("esc")
                         click(self.parent_absolute + '\\image\\receiving_resources\\research_and_development.png', 2)
-                        click(self.parent_absolute + '\\image\\receiving_resources\\speed_up.png', 2)
-                        click(self.parent_absolute + '\\image\\receiving_resources\\speed_up_2.png', 2)
-                        click(self.parent_absolute + '\\image\\receiving_resources\\buy_success.png', 2)
-                        press_key_once("esc")
+                        if is_exist(self.parent_absolute + '\\image\\receiving_resources\\speed_up.png'):
+                            click(self.parent_absolute + '\\image\\receiving_resources\\speed_up.png', 2)
+                            click(self.parent_absolute + '\\image\\receiving_resources\\speed_up_2.png', 2,0.9)
+                            click(self.parent_absolute + '\\image\\receiving_resources\\buy_success.png', 2)
+                            press_key_once("esc")
                     press_key_once("esc")
                     press_key_once("esc")
                     self.message_signal.emit("完成舰队日常")

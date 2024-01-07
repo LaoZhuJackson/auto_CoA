@@ -3,6 +3,7 @@ import sys
 import time
 
 from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from font_pyqt.mainWindow import Ui_MainWindow
@@ -179,6 +180,9 @@ class App(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+
+        self.setWindowTitle('auto_CoA')
+        self.setWindowIcon(QIcon('icon.ico'))
 
         self.handler = QtHandler(self.plainTextEdit_log)
         self.logger = logger.add(self.handler,

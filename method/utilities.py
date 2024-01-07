@@ -30,10 +30,10 @@ def click(image_path, timeout=30, confidence=0.7):
                 pyautogui.click(location)
                 message['status'] = 1
                 print("单击")
-                time.sleep(1)
+                time.sleep(0.3)
                 break
             # 图像未找到，等待一小段时间后重试
-            time.sleep(1)
+            time.sleep(0.5)
         except pyautogui.ImageNotFoundException:
             # 如果跳过没有检测到图片就跳过
             pass
@@ -62,7 +62,7 @@ def long_press_key(key, duration):
 
 def press_key_once(key):
     pyautogui.press(key)
-    time.sleep(1)
+    time.sleep(0.3)
 
 
 def get_parent_absolute():
