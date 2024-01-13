@@ -67,7 +67,14 @@ class Worker_Thread(QThread):
         click(self.parent_absolute + '\\image\\receiving_resources\\title.png', 2)
         # 等待程序打开,获取“开始游戏”图标位置
         click(self.parent_absolute + '\\image\\start_up\\start_game.png', 5, 0.7)
-        click(self.parent_absolute + '\\image\\start_up\\cancel.png', 15)
+        waiting_update_flag = is_exist('\\image\\start_up\\update.png', 0.8, 15)
+        if waiting_update_flag:
+            self.message_signal.emit("等待游戏更新")
+            while is_exist('\\image\\start_up\\update.png', 0.8):
+                # 如果还在更新，则停顿3秒
+                time.sleep(3)
+            self.message_signal.emit("游戏更新完毕")
+        click(self.parent_absolute + '\\image\\start_up\\cancel.png', 2)
         click(self.parent_absolute + '\\image\\start_up\\click_to_continue.png', 5)
 
         # 选择第一个角色进入
@@ -258,7 +265,7 @@ class Worker_Thread(QThread):
                         click(self.parent_absolute + '\\image\\receiving_resources\\research_and_development.png', 2)
                         if is_exist(self.parent_absolute + '\\image\\receiving_resources\\speed_up.png'):
                             click(self.parent_absolute + '\\image\\receiving_resources\\speed_up.png', 2)
-                            click(self.parent_absolute + '\\image\\receiving_resources\\speed_up_2.png', 2,0.9)
+                            click(self.parent_absolute + '\\image\\receiving_resources\\speed_up_2.png', 2, 0.9)
                             click(self.parent_absolute + '\\image\\receiving_resources\\buy_success.png', 2)
                             press_key_once("esc")
                     press_key_once("esc")

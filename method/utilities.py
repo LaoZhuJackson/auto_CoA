@@ -74,17 +74,16 @@ def get_parent_absolute():
 
 
 def is_exist(image_path, confidence=0.9, timeout=1):
-    exist = False
     start_time = time.time()
     while time.time() - start_time < timeout:
         try:
             location = pyautogui.locateOnScreen(image_path, confidence=confidence)
             if location is not None:
-                exist = True
+                return True
         except pyautogui.ImageNotFoundException:
             # 如果跳过没有检测到图片就跳过
             pass
-    return exist
+    return False
 
 
 def is_timeout(start_time, timeout):

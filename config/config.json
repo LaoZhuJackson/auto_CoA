@@ -5,7 +5,7 @@
     "all_character": 6,
     "checked_list": [
         false,
-        false,
+        true,
         true,
         false,
         true,
