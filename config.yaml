@@ -1,0 +1,19 @@
+locales: zh_CN # 语言
+log_level: INFO # 日志等级: INFO、DEBUG
+check_update: true # 检测更新
+
+after_finish: None # 任务完成后: "None"（无）"Exit"（退出）"Shutdown"（关机）"Hibernate"（休眠）"Sleep"（睡眠）
+
+pypi_mirror_urls: # pypi 镜像列表
+- https://mirrors.cloud.tencent.com/pypi/simple/
+- https://mirrors.aliyun.com/pypi/simple/
+- https://pypi.org/simple/
+
+game_title_name: 晶核：魔导觉醒 # 窗口标题
+game_path: C:\Program Files\CoA\晶核：魔导觉醒.exe # 游戏路径
+
+start_option: false # 自动点击启动器
+double_potion_option: false # 制作双倍药水
+tili_option: false # 刷体力
+exchange_option: false # 商人信用兑换
+receive_option: false # 领取奖励

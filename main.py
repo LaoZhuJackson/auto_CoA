@@ -6,7 +6,7 @@ from PyQt5.QtCore import QCoreApplication, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
-from font_pyqt.mainWindow import Ui_MainWindow
+from font_pyqt.HomeInterface import HomeInterface
 from loguru import logger
 from method.setting import load_settings, update_settings
 from method.threads import Worker_Thread
@@ -176,7 +176,7 @@ def message_error_append(error):
     logger.error(error)
 
 
-class App(QMainWindow, Ui_MainWindow):
+class App(QMainWindow, HomeInterface):
     def __init__(self):
         super().__init__()
         self.setupUi(self)

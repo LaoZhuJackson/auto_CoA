@@ -55,6 +55,8 @@ class Worker_Thread(QThread):
                         self.tili()
                     elif task_index == 4:
                         self.daily()
+                    elif task_index == 5:
+                        self.exchange()
         self.message_signal.emit("已完成所有任务")
         self.finished_signal.emit()
         self._stop_flag = True
@@ -70,7 +72,7 @@ class Worker_Thread(QThread):
         waiting_update_flag = is_exist('\\image\\start_up\\update.png', 0.8, 15)
         if waiting_update_flag:
             self.message_signal.emit("等待游戏更新")
-            while is_exist('\\image\\start_up\\update.png', 0.8):
+            while is_exist('\\image\\start_up\\update.png', 0.8) and not self._stop_flag:
                 # 如果还在更新，则停顿3秒
                 time.sleep(3)
             self.message_signal.emit("游戏更新完毕")
@@ -221,7 +223,7 @@ class Worker_Thread(QThread):
         # 再点击一下窗口标题
         click(self.parent_absolute + '\\image\\receiving_resources\\title.png', 2)
         for (index, set_check) in enumerate(self.daily_setting):
-            if set_check:
+            if set_check and not self._stop_flag:
                 # 领取商城每日奖励
                 if index == 0:
                     print("开始领取商城奖励")
@@ -331,3 +333,23 @@ class Worker_Thread(QThread):
         # 正常退出
         print("已完成日常")
         self.message_signal.emit("已完成日常")
+
+    def exchange(self):
+        self.message_signal.emit("开始商人信用兑换")
+        # 激活窗口，使置顶
+        self.coa_window.activate()
+        # 再点击一下窗口标题
+        click(self.parent_absolute + '\\image\\receiving_resources\\title.png', 2)
+        press_key_once('m')
+        click(self.parent_absolute + '\\image\\receiving_resources\\world_map.png', 2)
+        # 判断当前位置
+        if is_exist(self.parent_absolute + '\\image\\receiving_resources\\now_in_rhine.png', 2):
+            click(self.parent_absolute + '\\image\\receiving_resources\\rhine_city_map.png', 2)
+            waiting_loading()
+            press_key_once('m')
+        click(self.parent_absolute + '\\image\\receiving_resources\\world_map.png', 2)
+        click(self.parent_absolute + '\\image\\receiving_resources\\rhine_city_map.png', 2)
+        waiting_loading()
+        # 走到商人面前
+
+
