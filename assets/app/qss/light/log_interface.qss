@@ -1,0 +1,15 @@
+LogInterface, #scrollWidget {
+    background-color: transparent;
+}
+
+QScrollArea {
+    background-color: transparent;
+    border: none;
+}
+
+
+/* 标签 */
+QLabel#logLabel {
+    font: 33px 'Microsoft YaHei Light';
+    background-color: transparent;
+}

@@ -31,6 +31,6 @@ class SwitchSettingCard1(SettingCard):
         config.set_value(self.configName, isChecked)
 
     def setValue(self, isChecked: bool):
-        self.switchButton.setChecked(isChecked)
+        self.switchButton.setChecked(False)
         self.switchButton.setText(self.tr('开') if isChecked else self.tr('关'))
 #todo 实现保存用户设置

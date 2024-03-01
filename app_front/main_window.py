@@ -7,13 +7,14 @@ from app_front.common.signal_bus import signalBus
 
 with redirect_stdout(None):
     from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, setThemeColor, \
-    NavigationBarPushButton, toggleTheme, setTheme, darkdetect, Theme, ScrollArea
+        NavigationBarPushButton, toggleTheme, setTheme, darkdetect, Theme, ScrollArea
     from qfluentwidgets import FluentIcon as FIF
     from qfluentwidgets import InfoBar, InfoBarPosition
 
 from app_front.home_interface import HomeInterface
 from app_front.setting_interface import SettingInterface
 from app_front.function_interface import FunctionInterface
+from app_front.log_interface import LogInterface
 
 
 class MainWindow(MSFluentWindow):
@@ -29,6 +30,7 @@ class MainWindow(MSFluentWindow):
         self.homeInterface = HomeInterface(self)
         self.settingInterface = SettingInterface(self)
         self.functionInterface = FunctionInterface(self)
+        self.logInterface = LogInterface(self)
 
         self.initNavigation()
         self.splashScreen.finish()
@@ -47,6 +49,7 @@ class MainWindow(MSFluentWindow):
         # add navigation items
         self.addSubInterface(self.homeInterface, FIF.HOME, self.tr('主页'))
         self.addSubInterface(self.functionInterface, FIF.COMPLETED, self.tr('主要功能'))
+        self.addSubInterface(self.logInterface, FIF.MEGAPHONE, self.tr('任务日志'))
 
         # self.navigationInterface.addWidget(
         #     'themeButton',
