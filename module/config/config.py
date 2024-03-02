@@ -8,7 +8,7 @@ import os
 class Config:
     _instance = None
 
-    # 的是确保这个类只实例化一次，无论你尝试创建多少次对象。这对于管理全局配置、日志记录或数据库连接等场景非常有用
+    # 目的是确保这个类只实例化一次，无论你尝试创建多少次对象。这对于管理全局配置、日志记录或数据库连接等场景非常有用
     def __new__(cls, version_path, config_example_path, config_path):
         if cls._instance is None:
             cls._instance = super().__new__(cls)

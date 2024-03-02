@@ -63,7 +63,7 @@ class FunctionInterface(ScrollArea):
         #     parent=self.cycleGroup
         # )
         self.tiliOption = SwitchSettingCard1(
-            FIF.CAFE,
+            FIF.CALORIES,
             self.tr('刷体力'),
             "先选择要刷取的关卡",
             "tili_option"

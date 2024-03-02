@@ -80,6 +80,7 @@ class BannerWidget(QWidget):
         path.addRect(QRectF(0, h, w, self.height() - h))
         painter.fillPath(path, QBrush(pixmap))
 
+
 class HomeInterface(ScrollArea):
     """ Home interface """
 

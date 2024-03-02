@@ -8,6 +8,7 @@ class StyleSheet(StyleSheetBase, Enum):
     """ Style sheet  """
     HOME_INTERFACE = "home_interface"
     FUNCTION_INTERFACE = "function_interface"
+    LOG_INTERFACE = "log_interface"
 
     LINK_CARD = "link_card"
     SAMPLE_CARD = "sample_card"
