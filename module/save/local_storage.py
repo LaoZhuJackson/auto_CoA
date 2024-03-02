@@ -22,7 +22,7 @@ class LocalStorage:
         self.__dict[key] = value
         self._save()
 
-    def get_item(self, key, default=None):
+    def get_item(self, key: str, default=None):
         """
         读取数据
         """
@@ -62,7 +62,7 @@ class LocalStorageMgr(Singleton):
     def __init__(self):
         self.__storage_dict = {}
 
-    def getLocalStorage(self, name="user_default"):
+    def getLocalStorage(self, name="user_default") -> LocalStorage:
         """
         获取本地存储对象
         """
