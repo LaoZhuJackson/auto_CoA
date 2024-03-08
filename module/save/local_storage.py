@@ -1,4 +1,5 @@
 import json
+import sys
 from typing import Any
 
 
@@ -52,6 +53,7 @@ class LocalStorage:
             json.dump(self.__dict, json_file, indent=4)
 
 
+sys.path.append("..\\..\\auto_CoA")
 from module.base.singleton import Singleton
 
 

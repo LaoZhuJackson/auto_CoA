@@ -19,7 +19,7 @@ class ComboBoxSettingCard2(SettingCard):
         for key, value in texts.items():
             self.comboBox.addItem(key, userData=value)
             # 从配置文件中获取保存的设置
-            if value == config.get_value(configname):
+            if value == config.get_item(configname):
                 self.comboBox.setCurrentText(key)
 
         self.comboBox.currentIndexChanged.connect(self._onCurrentIndexChanged)

@@ -9,18 +9,21 @@ from managers.config_manager import config
 class ComboBoxSettingCard1(SettingCard):
     """ Setting card with a combo box """
 
-    def __init__(self, configname: str, icon: Union[str, QIcon, FluentIconBase], title, content=None, texts=None, parent=None):
+    def __init__(self, configName: str, icon: Union[str, QIcon, FluentIconBase], title, content=None, texts=None, parent=None):
         super().__init__(icon, title, content, parent)
-        self.configname = configname
+        self.configName = configName
         self.comboBox = ComboBox(self)
         self.hBoxLayout.addWidget(self.comboBox, 0, Qt.AlignRight)
         self.hBoxLayout.addSpacing(16)
 
         for text, option in zip(texts, texts):
             self.comboBox.addItem(text, userData=option)
-
-        self.comboBox.setCurrentText(config.get_value(configname))
+        # 如果没有该配置就创一个
+        if config.get_item(self.configName) is None:
+            # 将当前复选框的值（即复选框中的第一个值）赋值到配置中
+            config.set_item(self.configName, self.comboBox.text())
+        self.comboBox.setCurrentText(config.get_item(self.configName))
         self.comboBox.currentIndexChanged.connect(self._onCurrentIndexChanged)
 
     def _onCurrentIndexChanged(self, index: int):
-        config.set_value(self.configname, self.comboBox.itemData(index))
+        config.set_item(self.configName, self.comboBox.itemData(index))

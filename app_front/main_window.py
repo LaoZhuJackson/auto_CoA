@@ -1,3 +1,7 @@
+import logging
+import subprocess
+import sys
+
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt, QSize
@@ -16,6 +20,10 @@ from app_front.setting_interface import SettingInterface
 from app_front.function_interface import FunctionInterface
 from app_front.log_interface import LogInterface
 
+sys.path.append("..\\..\\auto_CoA")
+
+from module.save.local_storage import LocalStorageMgr
+
 
 class MainWindow(MSFluentWindow):
     def __init__(self):
@@ -23,6 +31,8 @@ class MainWindow(MSFluentWindow):
         setThemeColor('#FF6A6A')
         setTheme(Theme.AUTO)
         self.setMicaEffectEnabled(False)
+
+        self.config = LocalStorageMgr().getLocalStorage()
 
         self.initWindow()
 
@@ -38,8 +48,15 @@ class MainWindow(MSFluentWindow):
         # 检查更新
         # if config.check_update:
         #     checkUpdate(self)
+        # 检查是否自动打开游戏
+        if self.config.get_item("auto_open") is True:
+            self.open_game()
         # 绑定信号槽，实现快捷跳转
         self.connectSignalToSlot()
+
+    def open_game(self):
+        path = self.config.get_item("game_path")
+        subprocess.Popen(path)
 
     def connectSignalToSlot(self):
         # print("调用了connectSignalToSlot")

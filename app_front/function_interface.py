@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
 from qfluentwidgets import ScrollArea, ExpandLayout, SettingCardGroup, PrimaryPushSettingCard
 from qfluentwidgets import FluentIcon as FIF
 
+from app_front.card.comboboxsettingcard1 import ComboBoxSettingCard1
 from app_front.card.comboboxsettingcard2 import ComboBoxSettingCard2
 from app_front.card.switchsettingcard import SwitchSettingCard1
 from app_front.common.style_sheet import StyleSheet
@@ -95,7 +96,7 @@ class FunctionInterface(ScrollArea):
             "receive_option"
         )
         self.finishGroup = SettingCardGroup(self.tr("完成"), self.scrollWidget)
-        self.afterFinishCard = ComboBoxSettingCard2(
+        self.afterFinishCard = ComboBoxSettingCard1(
             "after_finish",
             FIF.POWER_BUTTON,
             self.tr('任务完成后'),

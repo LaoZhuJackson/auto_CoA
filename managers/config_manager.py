@@ -1,8 +1,12 @@
+import sys
+
 from module.config.config import Config
-import os
+sys.path.append("..\\..\\auto_CoA")
 
-VERSION_PATH = "./assets/config/version.txt"
-CONFIG_EXAMPLE_PATH = "./assets/config/config.example.yaml"
-CONFIG_PATH = "./config.yaml"
+from module.save.local_storage import LocalStorageMgr
 
-config = Config(VERSION_PATH, CONFIG_EXAMPLE_PATH, CONFIG_PATH)
+# VERSION_PATH = "./assets/config/version.txt"
+# CONFIG_EXAMPLE_PATH = "./assets/config/config.example.yaml"
+# CONFIG_PATH = "./config.yaml"
+
+config = LocalStorageMgr().getLocalStorage()

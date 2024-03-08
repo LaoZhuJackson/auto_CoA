@@ -1,5 +1,9 @@
+import logging
+import sys
+sys.path.append("..\\..\\auto_CoA")
+
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QStackedWidget, QLabel
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QStackedWidget, QLabel, QFileDialog
 from qfluentwidgets import ScrollArea, ExpandLayout, Pivot, SettingCardGroup, PushSettingCard, ComboBoxSettingCard
 
 from app_front.card.comboboxsettingcard1 import ComboBoxSettingCard1
@@ -7,6 +11,8 @@ from qfluentwidgets import FluentIcon as FIF
 
 from app_front.card.switchsettingcard import SwitchSettingCard1
 from app_front.common.style_sheet import StyleSheet
+from managers.config_manager import config
+from module.save.local_storage import LocalStorageMgr
 
 
 class SettingInterface(ScrollArea):
@@ -20,6 +26,9 @@ class SettingInterface(ScrollArea):
         self.scrollWidget = QWidget()
         self.vBoxLayout = QVBoxLayout(self.scrollWidget)
 
+        # 导入设置
+        # self.config = LocalStorageMgr().getLocalStorage()
+
         self.pivot = self.Nav(self)
         # 堆叠部件
         self.stackedWidget = QStackedWidget(self)
@@ -31,7 +40,13 @@ class SettingInterface(ScrollArea):
             self.tr('修改'),
             FIF.GAME,
             self.tr("游戏路径"),
-            'D:\game\\xxx\\xxx'
+            config.get_item("game_path")
+        )
+        self.autoOpenCard = SwitchSettingCard1(
+            FIF.APPLICATION,
+            self.tr('启动auto_coa后自动启动游戏'),
+            "请先确保游戏路径正确",
+            "auto_open"
         )
         self.checkUpdateCard = SwitchSettingCard1(
             FIF.UPDATE,
@@ -71,12 +86,13 @@ class SettingInterface(ScrollArea):
         StyleSheet.SETTING_INTERFACE.apply(self)
 
         self.__initLayout()
-        # self.__connectSignalToSlot()
+        self.__connectSignalToSlot()
 
     def __initLayout(self):
         self.settingLabel.move(10, 20)
         # 将卡片添加入对应分组中
         self.ProgramGroup.addSettingCard(self.gamePathCard)
+        self.ProgramGroup.addSettingCard(self.autoOpenCard)
         self.ProgramGroup.addSettingCard(self.checkUpdateCard)
 
         self.PowerGroup.addSettingCard(self.instanceTypeCard)
@@ -99,3 +115,20 @@ class SettingInterface(ScrollArea):
             text=text,
             onClick=lambda: self.stackedWidget.setCurrentWidget(widget)
         )
+
+    def __onGamePathCardClicked(self):
+        # Testing output
+        logging.error("This is an error message with color!")
+        logging.warning("This is a warning message with color!")
+        logging.info("This is an info message with color!")
+        game_path, _ = QFileDialog.getOpenFileName(self, "选择游戏路径", "", "All Files (*)")
+        if not game_path or self.config.get_item("game_path") == game_path:
+            return
+
+        self.config.set_item("game_path", game_path)
+        self.gamePathCard.setContent(game_path)
+
+        print(self.config.get_item("game_path"))
+
+    def __connectSignalToSlot(self):
+        self.gamePathCard.clicked.connect(self.__onGamePathCardClicked)

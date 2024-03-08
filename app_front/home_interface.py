@@ -18,7 +18,7 @@ class BannerWidget(QWidget):
 
         self.vBoxLayout = QVBoxLayout(self)
         # 大标题
-        self.galleryLabel = QLabel(f'护肝小助手 {config.version}\nCoA Assistant', self)
+        self.galleryLabel = QLabel(f'护肝小助手 {config.get_item("version")}\nCoA Assistant', self)
         self.galleryLabel.setStyleSheet("color: #FFF0F5;font-size: 30px; font-weight: 600;")
 
         # 创建阴影效果

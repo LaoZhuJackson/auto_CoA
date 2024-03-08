@@ -13,3 +13,12 @@ QLabel#logLabel {
     font: 33px 'Microsoft YaHei Light';
     background-color: transparent;
 }
+
+QTextEdit#log{
+    font: 20px 'Microsoft YaHei Light';
+    background-color: #F3F3F3;
+    border: solid #F3F3F3;
+    border-radius: 7px;
+    /*上，右，下，左*/
+    padding: 7px 10px 7px 10px;
+}

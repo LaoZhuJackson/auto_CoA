@@ -1,3 +1,4 @@
+import ctypes
 import os
 import sys
 
@@ -14,10 +15,24 @@ QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPo
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
 QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
+
+def is_admin():
+    try:
+        # return ctypes.windll.shell32.IsUserAnAdmin()
+        return True
+    except:
+        return False
+
+
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
+    if not is_admin():
+        # 以管理员身份重启进程，但会产生命令行窗口
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+        # sys.exit()
+    else:
+        app = QApplication(sys.argv)
+        app.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
 
-    w = MainWindow()
+        w = MainWindow()
 
-    sys.exit(app.exec_())
+        sys.exit(app.exec_())
