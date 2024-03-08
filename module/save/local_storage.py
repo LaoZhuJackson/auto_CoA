@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 
 class LocalStorage:
@@ -6,7 +7,7 @@ class LocalStorage:
     本地存储对象
     """
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         self.__json_file = name + ".json"
 
         try:
@@ -15,20 +16,20 @@ class LocalStorage:
         except FileNotFoundError:
             self.__dict = {}
 
-    def set_item(self, key, value):
+    def set_item(self, key: str, value: Any):
         """
         存储数据
         """
         self.__dict[key] = value
         self._save()
 
-    def get_item(self, key: str, default=None):
+    def get_item(self, key: str, default=None) -> Any:
         """
         读取数据
         """
         return self.__dict.get(key, default)
 
-    def remove_item(self, key):
+    def remove_item(self, key: str):
         """
         移除键值对
         """
