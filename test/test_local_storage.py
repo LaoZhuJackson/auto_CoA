@@ -1,5 +1,8 @@
-from module.save.local_storage import LocalStorageMgr
+import sys
 
+sys.path.append("C:\\work\\auto_CoA")
+
+from module.save.local_storage import LocalStorageMgr
 
 test_int = 42
 test_float = 3.14
@@ -17,7 +20,7 @@ ls.set_item("test_bool", test_bool)
 ls.set_item("test_str", test_str)
 ls.set_item("test_list", test_list)
 ls.set_item("test_tuple", test_tuple)
-ls.set_item("test_set", test_set)
+# ls.set_item("test_set", test_set) 不支持set类型
 ls.set_item("test_dict", test_dict)
 
 print(ls.get_item("test_int"))
