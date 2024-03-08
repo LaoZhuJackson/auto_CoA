@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append("C:\\work\\auto_CoA")
+sys.path.append("..\\..\\auto_CoA")
 
 from module.save.local_storage import LocalStorageMgr
 

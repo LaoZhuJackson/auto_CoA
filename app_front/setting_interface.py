@@ -87,7 +87,7 @@ class SettingInterface(ScrollArea):
 
         self.addSubInterface(self.ProgramGroup, 'programInterface', self.tr('程序'))
         self.addSubInterface(self.PowerGroup, 'PowerInterface', self.tr('体力'))
-
+        # 将子菜单添加进页面，并设置好锚点
         self.vBoxLayout.addWidget(self.pivot, 0, Qt.AlignLeft)
         self.vBoxLayout.addWidget(self.stackedWidget)
 
