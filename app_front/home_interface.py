@@ -49,10 +49,15 @@ class BannerWidget(QWidget):
 
         self.linkCardView.addCard(
             FluentIcon.GITHUB,
-            self.tr('GitHub repo'),
-            self.tr(
-                '你的星星\n就是我的动力|･ω･)'),
+            self.tr('GitHub地址'),
+            self.tr('你的星星\n就是我的动力|･ω･)'),
             "https://github.com/LaoZhuJackson/auto_CoA/",
+        )
+        self.linkCardView.addCard(
+            FluentIcon.INFO,
+            self.tr('提出建议'),
+            self.tr('前往github\n在issue中提建议(´▽`)ﾉ '),
+            "https://github.com/LaoZhuJackson/auto_CoA/issues",
         )
 
     def paintEvent(self, e):
@@ -124,25 +129,22 @@ class HomeInterface(ScrollArea):
         quick_jump.addSampleCard(
             icon="./assets/app/images/execute.png",
             title="功能界面",
-            content=self.tr(
-                "简单设置后一键种草！"),
-            routeKey="settingInterface",
+            content=self.tr("简单设置后一键种草！"),
+            routeKey="functionInterface",
             index=0
         )
         # 使用教程跳转
         quick_jump.addSampleCard(
             icon="./assets/app/images/learn.png",
             title="使用教程",
-            content=self.tr(
-                "查看教程快速使用"),
+            content=self.tr("查看教程快速使用"),
             routeKey="settingInterface",
             index=0
         )
         quick_jump.addSampleCard_URL(
             icon="./assets/app/images/ywbl.png",
             title="实现后台操作",
-            content=self.tr(
-                "让电脑不再跟你抢键鼠"),
+            content=self.tr("让电脑不再跟你抢键鼠"),
             url="https://www.bilibili.com/read/cv24286313/",
         )
 

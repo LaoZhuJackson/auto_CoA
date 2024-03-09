@@ -8,6 +8,7 @@ from PyQt5.QtCore import Qt, QSize
 from contextlib import redirect_stdout
 
 from app_front.common.signal_bus import signalBus
+from managers.config_manager import config
 
 with redirect_stdout(None):
     from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, setThemeColor, \
@@ -20,9 +21,16 @@ from app_front.setting_interface import SettingInterface
 from app_front.function_interface import FunctionInterface
 from app_front.log_interface import LogInterface
 
-sys.path.append("..\\..\\auto_CoA")
 
-from module.save.local_storage import LocalStorageMgr
+def open_game():
+    path = config.get_item("game_path")
+    game_dir = config.get_item("game_dir")  # 游戏的目录
+    try:
+        # 需要设置工作目录，不然晶核会在python文件所在文件夹建立工作区
+        subprocess.Popen(path, cwd=game_dir)
+        logging.info("打开游戏成功")
+    except Exception as e:
+        logging.error(f"打开游戏出错，请前往设置修改游戏路径后重启auto_coa：{e}")
 
 
 class MainWindow(MSFluentWindow):
@@ -31,8 +39,6 @@ class MainWindow(MSFluentWindow):
         setThemeColor('#FF6A6A')
         setTheme(Theme.AUTO)
         self.setMicaEffectEnabled(False)
-
-        self.config = LocalStorageMgr().getLocalStorage()
 
         self.initWindow()
 
@@ -49,14 +55,10 @@ class MainWindow(MSFluentWindow):
         # if config.check_update:
         #     checkUpdate(self)
         # 检查是否自动打开游戏
-        if self.config.get_item("auto_open") is True:
-            self.open_game()
+        if config.get_item("auto_open") is True:
+            open_game()
         # 绑定信号槽，实现快捷跳转
         self.connectSignalToSlot()
-
-    def open_game(self):
-        path = self.config.get_item("game_path")
-        subprocess.Popen(path)
 
     def connectSignalToSlot(self):
         # print("调用了connectSignalToSlot")
@@ -83,6 +85,8 @@ class MainWindow(MSFluentWindow):
 
         self.addSubInterface(self.settingInterface, FIF.SETTING, self.tr('设置'),
                              position=NavigationItemPosition.BOTTOM)
+        # 启动时跳转到日志页面
+        self.switchTo(self.logInterface)
 
     def initWindow(self):
         # 禁用最大化
@@ -135,11 +139,14 @@ class MainWindow(MSFluentWindow):
     #             parent=self
     #         )
     def switchToSample(self, routeKey, index):
-        """ switch to sample """
+        """
+        用于跳转到指定页面
+        :param routeKey: 跳转路径
+        :param index:
+        :return:
+        """
         interfaces = self.findChildren(ScrollArea)
-        print(interfaces)
         for w in interfaces:
             if w.objectName() == routeKey:
-                print("已找到")
                 self.stackedWidget.setCurrentWidget(w, False)
                 # w.scrollToCard(index)

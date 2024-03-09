@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 sys.path.append("..\\..\\auto_CoA")
 
@@ -12,7 +13,6 @@ from qfluentwidgets import FluentIcon as FIF
 from app_front.card.switchsettingcard import SwitchSettingCard1
 from app_front.common.style_sheet import StyleSheet
 from managers.config_manager import config
-from module.save.local_storage import LocalStorageMgr
 
 
 class SettingInterface(ScrollArea):
@@ -25,9 +25,6 @@ class SettingInterface(ScrollArea):
         self.parent = parent
         self.scrollWidget = QWidget()
         self.vBoxLayout = QVBoxLayout(self.scrollWidget)
-
-        # 导入设置
-        # self.config = LocalStorageMgr().getLocalStorage()
 
         self.pivot = self.Nav(self)
         # 堆叠部件
@@ -117,18 +114,18 @@ class SettingInterface(ScrollArea):
         )
 
     def __onGamePathCardClicked(self):
-        # Testing output
-        logging.error("This is an error message with color!")
-        logging.warning("This is a warning message with color!")
-        logging.info("This is an info message with color!")
-        game_path, _ = QFileDialog.getOpenFileName(self, "选择游戏路径", "", "All Files (*)")
-        if not game_path or self.config.get_item("game_path") == game_path:
+        game_path, _ = QFileDialog.getOpenFileName(self, "选择游戏路径", ".", "Executable Files (*.exe)")
+        if not game_path or config.get_item("game_path") == game_path:
             return
-
-        self.config.set_item("game_path", game_path)
-        self.gamePathCard.setContent(game_path)
-
-        print(self.config.get_item("game_path"))
+        try:
+            # 设置exe目录
+            config.set_item("game_path", game_path)
+            # 设置游戏目录
+            game_dir = os.path.dirname(game_path)
+            config.set_item("game_dir", game_dir)
+            self.gamePathCard.setContent(game_path)
+        except Exception as e:
+            logging.error(e)
 
     def __connectSignalToSlot(self):
         self.gamePathCard.clicked.connect(self.__onGamePathCardClicked)

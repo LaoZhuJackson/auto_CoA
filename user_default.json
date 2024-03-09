@@ -10,5 +10,6 @@
     "receive_option": false,
     "auto_open": false,
     "instance_type": "5-5",
-    "after_finish": "\u65e0"
+    "after_finish": "\u65e0",
+    "game_dir": "D:/Game/CoA"
 }
