@@ -18,8 +18,8 @@ QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
 
 def is_admin():
     try:
-        # return ctypes.windll.shell32.IsUserAnAdmin()
-        return True
+        return ctypes.windll.shell32.IsUserAnAdmin()
+        # return True
     except:
         return False
 
