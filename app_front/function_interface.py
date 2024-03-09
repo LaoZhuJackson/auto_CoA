@@ -1,3 +1,6 @@
+import logging
+import time
+
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
 from qfluentwidgets import ScrollArea, ExpandLayout, SettingCardGroup, PrimaryPushSettingCard
@@ -7,6 +10,8 @@ from app_front.card.comboboxsettingcard1 import ComboBoxSettingCard1
 from app_front.card.comboboxsettingcard2 import ComboBoxSettingCard2
 from app_front.card.switchsettingcard import SwitchSettingCard1
 from app_front.common.style_sheet import StyleSheet
+from managers.config_manager import config
+from method.task_thread import TaskThread
 
 
 class FunctionInterface(ScrollArea):
@@ -18,6 +23,11 @@ class FunctionInterface(ScrollArea):
         self.vBoxLayout = QVBoxLayout(self.scrollWidget)
         # 吸顶标题
         self.selectFunctionLabel = QLabel(self.tr("功能选择"), self)
+
+        # 存储勾选任务
+        self.chosen_tasks = []
+        # 线程对象初始化为none
+        self.task_thread = None
 
         # 开启组
         self.startGroup = SettingCardGroup(self.tr("开启"), self.scrollWidget)
@@ -38,7 +48,7 @@ class FunctionInterface(ScrollArea):
         self.startOption = SwitchSettingCard1(
             FIF.EMBED,
             self.tr('进入游戏'),
-            "请打开启动器，开启后默认进入第一个游戏角色",
+            "自动进入游戏，默认进入第一个角色",
             "start_option"
         )
         # 循环组
@@ -120,6 +130,7 @@ class FunctionInterface(ScrollArea):
         StyleSheet.FUNCTION_INTERFACE.apply(self)
 
         self.__initLayout()
+        self.__connectSignalToSlot()
 
     def __initLayout(self):
         self.selectFunctionLabel.move(10, 20)
@@ -139,3 +150,72 @@ class FunctionInterface(ScrollArea):
         self.vBoxLayout.addWidget(self.startGroup)
         self.vBoxLayout.addWidget(self.cycleGroup)
         self.vBoxLayout.addWidget(self.finishGroup)
+
+    def __connectSignalToSlot(self):
+        self.startup_card.clicked.connect(self.start_tasks)
+
+    def start_tasks(self):
+        # 如果点击按钮的时候存在任务流并且该任务流正在运行
+        if self.task_thread and self.task_thread.isRunning():
+            self.task_thread.stop()
+        else:
+            # 收集所有任务
+            if config.get_item("start_option"):
+                self.chosen_tasks.append(self.start_task)
+            if config.get_item("double_potion_option"):
+                self.chosen_tasks.append(self.double_potion_task)
+            if config.get_item("tili_option"):
+                self.chosen_tasks.append(self.tili_task)
+            if config.get_item("exchange_option"):
+                self.chosen_tasks.append(self.exchange_task)
+            if config.get_item("receive_option"):
+                self.chosen_tasks.append(self.receive_task)
+
+            self.task_thread = TaskThread(self.chosen_tasks)
+            self.task_thread.finished.connect(self.task_finished)
+            self.task_thread.stopped.connect(self.task_stopped)
+            self.task_thread.start()
+            # logging.debug(f"start:{self.task_thread.isRunning()}")
+            self.startup_card.button.setText('停止')
+
+    def task_finished(self):
+        # logging.debug(f"finish:{self.task_thread.isRunning()}")
+        self.startup_card.button.setText('启动')
+
+    def task_stopped(self):
+        # logging.debug(f"stopped:{self.task_thread.isRunning()}")
+        self.startup_card.button.setText('启动')
+
+    def start_task(self):
+        print("task1")
+        time.sleep(3)
+        if not self.task_thread.isRunning:
+            return
+
+    def double_potion_task(self):
+        # while True:
+        #     print(f"{time.time()}")
+        #     if not self.task_thread.isRunning:
+        #         break
+        print("task2")
+        time.sleep(3)
+        if not self.task_thread.isRunning:
+            return
+
+    def tili_task(self):
+        print("task3")
+        time.sleep(3)
+        if not self.task_thread.isRunning:
+            return
+
+    def exchange_task(self):
+        print("task4")
+        time.sleep(3)
+        if not self.task_thread.isRunning:
+            return
+
+    def receive_task(self):
+        print("task5")
+        time.sleep(3)
+        if not self.task_thread.isRunning:
+            return

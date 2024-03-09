@@ -86,7 +86,7 @@ class MainWindow(MSFluentWindow):
         self.addSubInterface(self.settingInterface, FIF.SETTING, self.tr('设置'),
                              position=NavigationItemPosition.BOTTOM)
         # 启动时跳转到日志页面
-        self.switchTo(self.logInterface)
+        # self.switchTo(self.logInterface)
 
     def initWindow(self):
         # 禁用最大化
