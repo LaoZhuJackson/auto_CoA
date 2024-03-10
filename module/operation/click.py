@@ -3,7 +3,7 @@ import os
 import sys
 import time
 from PIL import Image
-
+from module.utils.path_utils import PathUtils
 import pyautogui
 
 
@@ -35,21 +35,21 @@ class Click:
         self.path = None
         self.timeout = 30
         self.confidence = 0.7
-        # 为了保证资源路径在开发和打包后都正确
-        if getattr(sys, 'frozen', False):
-            # 如果是打包后的应用，使用系统的绝对路径
-            self.basedir = os.path.join(sys._MEIPASS, "image")
-        else:
-            # 如果是开发中的代码，使用当前目录的相对路径
-            self.basedir = 'image'
+        self.basedir = os.path.join(PathUtils.get_base_dir(), "image")
 
     def common_click(self, image, is_running: bool, timeout=3, confidence=0.7):
         start_time = time.time()
         image_path = os.path.join(self.basedir, image)
-        while time.time() - start_time < timeout and is_running and is_valid_image_path(image_path):
+        while (
+            time.time() - start_time < timeout
+            and is_running
+            and is_valid_image_path(image_path)
+        ):
             try:
                 # 尝试定位界面中的特定图像
-                location = pyautogui.locateCenterOnScreen(image_path, confidence=confidence)
+                location = pyautogui.locateCenterOnScreen(
+                    image_path, confidence=confidence
+                )
                 if location is not None:
                     # 图像找到，执行点击，退出循环
                     pyautogui.click(location)
@@ -62,7 +62,7 @@ class Click:
                 # 如果跳过没有检测到图片就跳过
                 pass
 
-    def alt_click(self,img_path, timeout=2, confidence=0.8):
-        pyautogui.keyDown('alt')
+    def alt_click(self, img_path, timeout=2, confidence=0.8):
+        pyautogui.keyDown("alt")
         self.common_click()
-        pyautogui.keyUp('alt')
+        pyautogui.keyUp("alt")

@@ -12,8 +12,18 @@ from app_front.common.signal_bus import signalBus
 from managers.config_manager import config
 
 with redirect_stdout(None):
-    from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, setThemeColor, \
-        NavigationBarPushButton, toggleTheme, setTheme, darkdetect, Theme, ScrollArea
+    from qfluentwidgets import (
+        NavigationItemPosition,
+        MSFluentWindow,
+        SplashScreen,
+        setThemeColor,
+        NavigationBarPushButton,
+        toggleTheme,
+        setTheme,
+        darkdetect,
+        Theme,
+        ScrollArea,
+    )
     from qfluentwidgets import FluentIcon as FIF
     from qfluentwidgets import InfoBar, InfoBarPosition
 
@@ -21,6 +31,7 @@ from app_front.home_interface import HomeInterface
 from app_front.setting_interface import SettingInterface
 from app_front.function_interface import FunctionInterface
 from app_front.log_interface import LogInterface
+from module.utils.path_utils import PathUtils
 
 
 def open_game():
@@ -28,9 +39,9 @@ def open_game():
     game_dir = config.get_item("game_dir")  # 游戏的目录
     try:
         # 获取所有运行中的进程列表
-        tasks = subprocess.check_output(['tasklist']).decode('utf-8', 'ignore')
+        tasks = subprocess.check_output(["tasklist"]).decode("utf-8", "ignore")
         # 获取文件名
-        exe_name = path.split('\\')[-1]
+        exe_name = path.split("\\")[-1]
         # 检查.exe文件名是否在任务列表中
         if exe_name in tasks:
             logging.info("游戏已打开")
@@ -45,7 +56,7 @@ def open_game():
 class MainWindow(MSFluentWindow):
     def __init__(self):
         super().__init__()
-        setThemeColor('#FF6A6A')
+        setThemeColor("#FF6A6A")
         setTheme(Theme.AUTO)
         self.setMicaEffectEnabled(False)
 
@@ -75,9 +86,9 @@ class MainWindow(MSFluentWindow):
 
     def initNavigation(self):
         # add navigation items
-        self.addSubInterface(self.homeInterface, FIF.HOME, self.tr('主页'))
-        self.addSubInterface(self.functionInterface, FIF.COMPLETED, self.tr('主要功能'))
-        self.addSubInterface(self.logInterface, FIF.MEGAPHONE, self.tr('任务日志'))
+        self.addSubInterface(self.homeInterface, FIF.HOME, self.tr("主页"))
+        self.addSubInterface(self.functionInterface, FIF.COMPLETED, self.tr("主要功能"))
+        self.addSubInterface(self.logInterface, FIF.MEGAPHONE, self.tr("任务日志"))
 
         # self.navigationInterface.addWidget(
         #     'themeButton',
@@ -92,8 +103,12 @@ class MainWindow(MSFluentWindow):
         #     NavigationItemPosition.BOTTOM
         # )
 
-        self.addSubInterface(self.settingInterface, FIF.SETTING, self.tr('设置'),
-                             position=NavigationItemPosition.BOTTOM)
+        self.addSubInterface(
+            self.settingInterface,
+            FIF.SETTING,
+            self.tr("设置"),
+            position=NavigationItemPosition.BOTTOM,
+        )
         # 启动时跳转到日志页面
         # self.switchTo(self.logInterface)
 
@@ -107,15 +122,7 @@ class MainWindow(MSFluentWindow):
 
         self.resize(900, 700)
 
-        # 为了保证图标在开发和打包后都能够使用，你需要正确地检测图标路径
-        if getattr(sys, 'frozen', False):
-            # 如果是打包后的应用，使用系统的绝对路径
-            basedir = sys._MEIPASS
-        else:
-            # 如果是开发中的代码，使用当前目录的相对路径
-            basedir = '.'
-
-        icon_path = os.path.join(basedir, 'icon.ico')
+        icon_path = os.path.join(PathUtils.get_base_dir(), "icon.ico")
         self.setWindowIcon(QIcon(icon_path))
         self.setWindowTitle("CoA Assistant")
         # create splash screen

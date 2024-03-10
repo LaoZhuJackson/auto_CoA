@@ -4,17 +4,24 @@ import sys
 
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QPixmap, QPainter, QPainterPath, QBrush
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QGraphicsDropShadowEffect, QHBoxLayout
+from PyQt5.QtWidgets import (
+    QWidget,
+    QVBoxLayout,
+    QLabel,
+    QGraphicsDropShadowEffect,
+    QHBoxLayout,
+)
 from qfluentwidgets import ScrollArea, FluentIcon
 
 from app_front.components.link_card import LinkCardView
 from app_front.card.samplecardview import SampleCardView
 from app_front.common.style_sheet import StyleSheet
 from managers.config_manager import config
+from module.utils.path_utils import PathUtils
 
 
 class BannerWidget(QWidget):
-    """ Banner widget """
+    """Banner widget"""
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -22,8 +29,12 @@ class BannerWidget(QWidget):
 
         self.vBoxLayout = QVBoxLayout(self)
         # 大标题
-        self.galleryLabel = QLabel(f'护肝小助手 {config.get_item("version")}\nCoA Assistant', self)
-        self.galleryLabel.setStyleSheet("color: #FFF0F5;font-size: 30px; font-weight: 600;")
+        self.galleryLabel = QLabel(
+            f'护肝小助手 {config.get_item("version")}\nCoA Assistant', self
+        )
+        self.galleryLabel.setStyleSheet(
+            "color: #FFF0F5;font-size: 30px; font-weight: 600;"
+        )
 
         # 创建阴影效果
         shadow = QGraphicsDropShadowEffect()
@@ -34,20 +45,14 @@ class BannerWidget(QWidget):
         # 将阴影效果应用于小部件
         self.galleryLabel.setGraphicsEffect(shadow)
 
-        # 为了保证图标在开发和打包后都能够使用，你需要正确地检测图标路径
-        if getattr(sys, 'frozen', False):
-            # 如果是打包后的应用，使用系统的绝对路径
-            self.basedir = sys._MEIPASS
-        else:
-            # 如果是开发中的代码，使用当前目录的相对路径
-            self.basedir = '.'
-        banner_path = os.path.join(self.basedir, 'assets/app/images/background.jpg')
+        self.basedir = PathUtils.get_base_dir()
+        banner_path = os.path.join(self.basedir, "assets/app/images/background.jpg")
         self.banner = QPixmap(banner_path)
         # 超链接卡片
         self.linkCardView = LinkCardView(self)
         # 设置边界
         self.linkCardView.setContentsMargins(0, 0, 0, 36)
-        self.galleryLabel.setObjectName('galleryLabel')
+        self.galleryLabel.setObjectName("galleryLabel")
         # 纵向布局
         linkCardLayout = QHBoxLayout()
         linkCardLayout.addWidget(self.linkCardView)
@@ -61,14 +66,14 @@ class BannerWidget(QWidget):
 
         self.linkCardView.addCard(
             FluentIcon.GITHUB,
-            self.tr('GitHub地址'),
-            self.tr('你的星星\n就是我的动力|･ω･)'),
+            self.tr("GitHub地址"),
+            self.tr("你的星星\n就是我的动力|･ω･)"),
             "https://github.com/LaoZhuJackson/auto_CoA/",
         )
         self.linkCardView.addCard(
             FluentIcon.INFO,
-            self.tr('提出建议'),
-            self.tr('前往github\n在issue中提建议(´▽`)ﾉ '),
+            self.tr("提出建议"),
+            self.tr("前往github\n在issue中提建议(´▽`)ﾉ "),
             "https://github.com/LaoZhuJackson/auto_CoA/issues",
         )
 
@@ -93,7 +98,11 @@ class BannerWidget(QWidget):
         try:
             image_height = self.width() * self.banner.height() // self.banner.width()
             pixmap = self.banner.scaled(
-                self.width(), image_height, aspectRatioMode=Qt.KeepAspectRatio, transformMode=Qt.SmoothTransformation)
+                self.width(),
+                image_height,
+                aspectRatioMode=Qt.KeepAspectRatio,
+                transformMode=Qt.SmoothTransformation,
+            )
         except ZeroDivisionError as e:
             print(f"图片加载失败:{e}")
             # logging.error(f"图片加载失败:{e}")
@@ -102,28 +111,21 @@ class BannerWidget(QWidget):
 
 
 class HomeInterface(ScrollArea):
-    """ Home interface """
+    """Home interface"""
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
         self.banner = BannerWidget(self)
         self.view = QWidget(self)
         self.vBoxLayout = QVBoxLayout(self.view)
-
-        # 为了保证图标在开发和打包后都能够使用，你需要正确地检测图标路径
-        if getattr(sys, 'frozen', False):
-            # 如果是打包后的应用，使用系统的绝对路径
-            self.basedir = sys._MEIPASS
-        else:
-            # 如果是开发中的代码，使用当前目录的相对路径
-            self.basedir = '.'
+        self.basedir = PathUtils.get_base_dir()
 
         self.__initWidget()
         self.loadSamples()
 
     def __initWidget(self):
-        self.view.setObjectName('view')
-        self.setObjectName('homeInterface')
+        self.view.setObjectName("view")
+        self.setObjectName("homeInterface")
         StyleSheet.HOME_INTERFACE.apply(self)
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -136,25 +138,23 @@ class HomeInterface(ScrollArea):
         self.vBoxLayout.setAlignment(Qt.AlignTop)
 
     def loadSamples(self):
-        """ load samples """
+        """load samples"""
 
-        quick_jump = SampleCardView(
-            self.tr("快捷跳转"), self.view)
+        quick_jump = SampleCardView(self.tr("快捷跳转"), self.view)
         # 跳转设置
         quick_jump.addSampleCard(
             icon=os.path.join(self.basedir, "assets/app/images/setting.png"),
             title="设置",
-            content=self.tr(
-                "对每个功能进行对应设置"),
+            content=self.tr("对每个功能进行对应设置"),
             routeKey="settingInterface",
-            index=0
+            index=0,
         )
         quick_jump.addSampleCard(
             icon=os.path.join(self.basedir, "assets/app/images/execute.png"),
             title="功能界面",
             content=self.tr("简单设置后一键种草！"),
             routeKey="functionInterface",
-            index=0
+            index=0,
         )
         # 使用教程跳转
         quick_jump.addSampleCard(
@@ -162,7 +162,7 @@ class HomeInterface(ScrollArea):
             title="使用教程",
             content=self.tr("查看教程快速使用"),
             routeKey="settingInterface",
-            index=0
+            index=0,
         )
         quick_jump.addSampleCard_URL(
             icon=os.path.join(self.basedir, "assets/app/images/ywbl.png"),

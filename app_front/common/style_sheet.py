@@ -2,12 +2,13 @@
 import os
 import sys
 from enum import Enum
-
+from module.utils.path_utils import PathUtils
 from qfluentwidgets import StyleSheetBase, Theme, isDarkTheme, qconfig
 
 
 class StyleSheet(StyleSheetBase, Enum):
-    """ Style sheet  """
+    """Style sheet"""
+
     HOME_INTERFACE = "home_interface"
     FUNCTION_INTERFACE = "function_interface"
     LOG_INTERFACE = "log_interface"
@@ -27,11 +28,8 @@ class StyleSheet(StyleSheetBase, Enum):
 
     def path(self, theme=Theme.AUTO):
         theme = qconfig.theme if theme == Theme.AUTO else theme
-        # 为了保证图标在开发和打包后都能够使用，你需要正确地检测图标路径
-        if getattr(sys, 'frozen', False):
-            # 如果是打包后的应用，使用系统的绝对路径
-            basedir = sys._MEIPASS
-        else:
-            # 如果是开发中的代码，使用当前目录的相对路径
-            basedir = '.'
-        return os.path.join(basedir, f"assets/app/qss/{theme.value.lower()}/{self.value}.qss")
+
+        return os.path.join(
+            PathUtils.get_base_dir(),
+            f"assets/app/qss/{theme.value.lower()}/{self.value}.qss",
+        )
