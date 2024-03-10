@@ -1,9 +1,10 @@
+import inspect
 import logging
 import time
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
-from qfluentwidgets import ScrollArea, ExpandLayout, SettingCardGroup, PrimaryPushSettingCard
+from qfluentwidgets import ScrollArea, ExpandLayout, SettingCardGroup, PrimaryPushSettingCard, InfoBar, InfoBarPosition
 from qfluentwidgets import FluentIcon as FIF
 
 from app_front.card.comboboxsettingcard1 import ComboBoxSettingCard1
@@ -12,6 +13,19 @@ from app_front.card.switchsettingcard import SwitchSettingCard1
 from app_front.common.style_sheet import StyleSheet
 from managers.config_manager import config
 from method.task_thread import TaskThread
+from module.operation.click import Click
+from module.operation.ultilities import activate
+
+
+def get_current_function_name():
+    """
+    获取当前执行函数的函数名
+    :return: 函数名
+    """
+    cf = inspect.currentframe()
+    name = cf.f_back.f_code.co_name
+    del cf  # 删除帧引用
+    return name
 
 
 class FunctionInterface(ScrollArea):
@@ -28,6 +42,9 @@ class FunctionInterface(ScrollArea):
         self.chosen_tasks = []
         # 线程对象初始化为none
         self.task_thread = None
+
+        # 原子操作
+        self.click = Click()
 
         # 开启组
         self.startGroup = SettingCardGroup(self.tr("开启"), self.scrollWidget)
@@ -175,24 +192,53 @@ class FunctionInterface(ScrollArea):
             self.task_thread.finished.connect(self.task_finished)
             self.task_thread.stopped.connect(self.task_stopped)
             self.task_thread.start()
+            # 侧边通知
+            InfoBar.success(
+                title='启动成功',
+                content="日志任务栏中可查看进度",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP_RIGHT,
+                duration=2000,
+                parent=self
+            )
+            # 激活窗口使窗口置顶
+            activate(self.task_thread.is_running)
             # logging.debug(f"start:{self.task_thread.isRunning()}")
             self.startup_card.button.setText('停止')
 
     def task_finished(self):
-        # logging.debug(f"finish:{self.task_thread.isRunning()}")
+        logging.debug(f"finish:{self.task_thread.isRunning()}")
         self.startup_card.button.setText('启动')
 
     def task_stopped(self):
-        # logging.debug(f"stopped:{self.task_thread.isRunning()}")
+        logging.debug(f"stopped:{self.task_thread.isRunning()}")
         self.startup_card.button.setText('启动')
 
+    # 以下是每个任务流程
     def start_task(self):
-        print("task1")
-        time.sleep(3)
+        """
+        从启动器首页进入到角色选择页面，可能需要把选角色这个操作单独独立出来
+        :return:
+        """
+        logging.info(f"当前执行：{get_current_function_name()}")
+        # 点击“开始游戏”
+        self.click.common_click("start_up\\start_game.png", self.task_thread.isRunning)
         if not self.task_thread.isRunning:
             return
+        # 判断是否在更新
+
+        # 判断是否出现更新中断
+
+        # 关闭公告
+
+        # 进入游戏选择角色。。。
 
     def double_potion_task(self):
+        """
+        制作双倍药水
+        :return:
+        """
         # while True:
         #     print(f"{time.time()}")
         #     if not self.task_thread.isRunning:
@@ -203,18 +249,30 @@ class FunctionInterface(ScrollArea):
             return
 
     def tili_task(self):
+        """
+        刷体力（估计很复杂）
+        :return:
+        """
         print("task3")
         time.sleep(3)
         if not self.task_thread.isRunning:
             return
 
     def exchange_task(self):
+        """
+        商人交易
+        :return:
+        """
         print("task4")
         time.sleep(3)
         if not self.task_thread.isRunning:
             return
 
     def receive_task(self):
+        """
+        领取游戏奖励
+        :return:
+        """
         print("task5")
         time.sleep(3)
         if not self.task_thread.isRunning:

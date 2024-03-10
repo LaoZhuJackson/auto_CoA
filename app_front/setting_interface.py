@@ -42,7 +42,7 @@ class SettingInterface(ScrollArea):
         self.autoOpenCard = SwitchSettingCard1(
             FIF.APPLICATION,
             self.tr('启动auto_coa后自动启动游戏'),
-            "请先确保游戏路径正确",
+            "先确保游戏路径正确,更改后重启生效",
             "auto_open"
         )
         self.checkUpdateCard = SwitchSettingCard1(

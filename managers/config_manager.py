@@ -1,7 +1,8 @@
+import logging
 import sys
 
 from module.config.config import Config
-sys.path.append("..\\..\\auto_CoA")
+# sys.path.append("..\\..\\auto_CoA")
 
 from module.save.local_storage import LocalStorageMgr
 

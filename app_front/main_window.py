@@ -27,9 +27,17 @@ def open_game():
     path = config.get_item("game_path")
     game_dir = config.get_item("game_dir")  # 游戏的目录
     try:
-        # 需要设置工作目录，不然晶核会在python文件所在文件夹建立工作区
-        subprocess.Popen(path, cwd=game_dir)
-        logging.info("打开游戏成功")
+        # 获取所有运行中的进程列表
+        tasks = subprocess.check_output(['tasklist']).decode('utf-8', 'ignore')
+        # 获取文件名
+        exe_name = path.split('\\')[-1]
+        # 检查.exe文件名是否在任务列表中
+        if exe_name in tasks:
+            logging.info("游戏已打开")
+        else:
+            # 需要设置工作目录，不然晶核会在python文件所在文件夹建立工作区
+            subprocess.Popen(path, cwd=game_dir)
+            logging.info("打开游戏成功")
     except Exception as e:
         logging.error(f"打开游戏出错，请前往设置修改游戏路径后重启auto_coa：{e}")
 
