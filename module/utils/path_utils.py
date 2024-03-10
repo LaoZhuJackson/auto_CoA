@@ -1,3 +1,4 @@
+import os
 import sys
 
 
@@ -13,7 +14,15 @@ class PathUtils:
         """
         basedir = "."
         if getattr(sys, "frozen", False):
+            # 我们在一个 PyInstaller 打包的环境中运行。
             # 为了保证图标在开发和打包后都能够使用，你需要正确地检测图标路径
-            # 如果是打包后的应用，使用系统的绝对路径
-            basedir = sys._MEIPASS
+            basedir = getattr(sys, '_MEIPASS', ".")
         return basedir
+
+    @staticmethod
+    def get_path(relative_path: str):
+        """
+        获取路径
+        """
+        basedir = os.path.abspath(PathUtils.get_base_dir())
+        return os.path.normpath(os.path.join(basedir, relative_path))

@@ -2,17 +2,17 @@ import logging
 import os
 import time
 
+import pyautogui
+import pygetwindow as gw
 # import pywinauto.findwindows
 from PIL import Image, ImageChops
-import pygetwindow as gw
-
-import pyautogui
-
-# from pywinauto import Application, Desktop
 
 from managers.config_manager import config
 from managers.utilities_manager import utilities
 from module.utils.path_utils import PathUtils
+
+
+# from pywinauto import Application, Desktop
 
 
 def is_valid_image_path(relative_path):
@@ -51,9 +51,9 @@ class Click:
             image_path = os.path.join(self.basedir, image)
             timeout_flag = True
             while (
-                time.time() - start_time < timeout
-                and is_running
-                and is_valid_image_path(image_path)
+                    time.time() - start_time < timeout
+                    and is_running
+                    and is_valid_image_path(image_path)
             ):
                 try:
                     # 尝试定位界面中的特定图像

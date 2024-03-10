@@ -1,12 +1,11 @@
 import logging
 import os
 import subprocess
-import sys
+from contextlib import redirect_stdout
 
+from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import Qt, QSize
-from contextlib import redirect_stdout
 
 from app_front.common.signal_bus import signalBus
 from managers.config_manager import config
@@ -17,10 +16,7 @@ with redirect_stdout(None):
         MSFluentWindow,
         SplashScreen,
         setThemeColor,
-        NavigationBarPushButton,
-        toggleTheme,
         setTheme,
-        darkdetect,
         Theme,
         ScrollArea,
     )

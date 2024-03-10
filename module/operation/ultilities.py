@@ -1,24 +1,17 @@
-import logging
 import os
-import sys
 import time
 
 import pyautogui
 
 from managers.config_manager import config
+from module.utils.path_utils import PathUtils
 
 
 class Utilities:
     def __init__(self):
         self.game_path = config.get_item("game_path")
         self.game_name = self.game_path.split('/')[-1].split('.')[0]  # “晶核：魔导觉醒”
-        # 为了保证资源路径在开发和打包后都正确
-        if getattr(sys, 'frozen', False):
-            # 如果是打包后的应用，使用系统的绝对路径
-            self.basedir = os.path.join(sys._MEIPASS, "image")
-        else:
-            # 如果是开发中的代码，使用当前目录的相对路径
-            self.basedir = 'image'
+        self.basedir = os.path.join(PathUtils.get_base_dir(), "image")
 
     def is_exist(self, image_path, timeout=1, confidence=0.7):
         """

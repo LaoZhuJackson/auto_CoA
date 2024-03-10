@@ -1,11 +1,7 @@
 import os
-import sys
 import time
-from datetime import datetime
 
 import pyautogui
-
-from method.setting import load_settings, update_settings
 
 # pyautogui.PAUSE = 1
 pyautogui.FAILSAFE = False
@@ -91,15 +87,6 @@ def is_timeout(start_time, timeout):
         return False
     else:
         return True
-
-
-def get_path(relative_path):
-    try:
-        base_path = sys._MEIPASS
-    except AttributeError:
-        base_path = os.path.abspath(".")
-
-    return os.path.normpath(os.path.join(base_path, relative_path))
 
 
 def run_next(to_do_list: list, current_index: int):

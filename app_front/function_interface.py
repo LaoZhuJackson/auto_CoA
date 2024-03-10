@@ -4,11 +4,10 @@ import time
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
-from qfluentwidgets import ScrollArea, ExpandLayout, SettingCardGroup, PrimaryPushSettingCard, InfoBar, InfoBarPosition
 from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import ScrollArea, SettingCardGroup, PrimaryPushSettingCard, InfoBar, InfoBarPosition
 
 from app_front.card.comboboxsettingcard1 import ComboBoxSettingCard1
-from app_front.card.comboboxsettingcard2 import ComboBoxSettingCard2
 from app_front.card.switchsettingcard import SwitchSettingCard1
 from app_front.common.style_sheet import StyleSheet
 from managers.config_manager import config
