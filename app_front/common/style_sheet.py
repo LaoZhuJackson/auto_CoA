@@ -1,4 +1,6 @@
 # coding: utf-8
+import os
+import sys
 from enum import Enum
 
 from qfluentwidgets import StyleSheetBase, Theme, isDarkTheme, qconfig
@@ -25,4 +27,11 @@ class StyleSheet(StyleSheetBase, Enum):
 
     def path(self, theme=Theme.AUTO):
         theme = qconfig.theme if theme == Theme.AUTO else theme
-        return f"./assets/app/qss/{theme.value.lower()}/{self.value}.qss"
+        # 为了保证图标在开发和打包后都能够使用，你需要正确地检测图标路径
+        if getattr(sys, 'frozen', False):
+            # 如果是打包后的应用，使用系统的绝对路径
+            basedir = sys._MEIPASS
+        else:
+            # 如果是开发中的代码，使用当前目录的相对路径
+            basedir = '.'
+        return os.path.join(basedir, f"assets/app/qss/{theme.value.lower()}/{self.value}.qss")

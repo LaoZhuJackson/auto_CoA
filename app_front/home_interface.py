@@ -1,3 +1,7 @@
+import logging
+import os
+import sys
+
 from PyQt5.QtCore import Qt, QRectF
 from PyQt5.QtGui import QPixmap, QPainter, QPainterPath, QBrush
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QLabel, QGraphicsDropShadowEffect, QHBoxLayout
@@ -30,7 +34,15 @@ class BannerWidget(QWidget):
         # 将阴影效果应用于小部件
         self.galleryLabel.setGraphicsEffect(shadow)
 
-        self.banner = QPixmap('./assets/app/images/background.jpg')
+        # 为了保证图标在开发和打包后都能够使用，你需要正确地检测图标路径
+        if getattr(sys, 'frozen', False):
+            # 如果是打包后的应用，使用系统的绝对路径
+            self.basedir = sys._MEIPASS
+        else:
+            # 如果是开发中的代码，使用当前目录的相对路径
+            self.basedir = '.'
+        banner_path = os.path.join(self.basedir, 'assets/app/images/background.jpg')
+        self.banner = QPixmap(banner_path)
         # 超链接卡片
         self.linkCardView = LinkCardView(self)
         # 设置边界
@@ -78,10 +90,13 @@ class BannerWidget(QWidget):
         path.addRect(QRectF(w - 50, h - 50, 50, 50))
         path = path.simplified()
         # 计算图片的高度
-        image_height = self.width() * self.banner.height() // self.banner.width()
-
-        pixmap = self.banner.scaled(
-            self.width(), image_height, aspectRatioMode=Qt.KeepAspectRatio, transformMode=Qt.SmoothTransformation)
+        try:
+            image_height = self.width() * self.banner.height() // self.banner.width()
+            pixmap = self.banner.scaled(
+                self.width(), image_height, aspectRatioMode=Qt.KeepAspectRatio, transformMode=Qt.SmoothTransformation)
+        except ZeroDivisionError as e:
+            print(f"图片加载失败:{e}")
+            # logging.error(f"图片加载失败:{e}")
         path.addRect(QRectF(0, h, w, self.height() - h))
         painter.fillPath(path, QBrush(pixmap))
 
@@ -94,6 +109,14 @@ class HomeInterface(ScrollArea):
         self.banner = BannerWidget(self)
         self.view = QWidget(self)
         self.vBoxLayout = QVBoxLayout(self.view)
+
+        # 为了保证图标在开发和打包后都能够使用，你需要正确地检测图标路径
+        if getattr(sys, 'frozen', False):
+            # 如果是打包后的应用，使用系统的绝对路径
+            self.basedir = sys._MEIPASS
+        else:
+            # 如果是开发中的代码，使用当前目录的相对路径
+            self.basedir = '.'
 
         self.__initWidget()
         self.loadSamples()
@@ -119,7 +142,7 @@ class HomeInterface(ScrollArea):
             self.tr("快捷跳转"), self.view)
         # 跳转设置
         quick_jump.addSampleCard(
-            icon="./assets/app/images/setting.png",
+            icon=os.path.join(self.basedir, "assets/app/images/setting.png"),
             title="设置",
             content=self.tr(
                 "对每个功能进行对应设置"),
@@ -127,7 +150,7 @@ class HomeInterface(ScrollArea):
             index=0
         )
         quick_jump.addSampleCard(
-            icon="./assets/app/images/execute.png",
+            icon=os.path.join(self.basedir, "assets/app/images/execute.png"),
             title="功能界面",
             content=self.tr("简单设置后一键种草！"),
             routeKey="functionInterface",
@@ -135,14 +158,14 @@ class HomeInterface(ScrollArea):
         )
         # 使用教程跳转
         quick_jump.addSampleCard(
-            icon="./assets/app/images/learn.png",
+            icon=os.path.join(self.basedir, "assets/app/images/learn.png"),
             title="使用教程",
             content=self.tr("查看教程快速使用"),
             routeKey="settingInterface",
             index=0
         )
         quick_jump.addSampleCard_URL(
-            icon="./assets/app/images/ywbl.png",
+            icon=os.path.join(self.basedir, "assets/app/images/ywbl.png"),
             title="实现后台操作",
             content=self.tr("让电脑不再跟你抢键鼠"),
             url="https://www.bilibili.com/read/cv24286313/",

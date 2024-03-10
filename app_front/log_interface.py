@@ -21,7 +21,7 @@ class LogInterface(ScrollArea):
         self.text_edit = QTextEdit()
 
         self.__initWidget()
-        # 重定向
+        # 重定向输出到gui
         self.__redirectOutput()
 
     def __initWidget(self):

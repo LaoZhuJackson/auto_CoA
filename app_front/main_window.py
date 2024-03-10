@@ -1,4 +1,5 @@
 import logging
+import os
 import subprocess
 import sys
 
@@ -97,7 +98,17 @@ class MainWindow(MSFluentWindow):
         # self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowMaximizeButtonHint)
 
         self.resize(900, 700)
-        self.setWindowIcon(QIcon(r'icon.ico'))
+
+        # 为了保证图标在开发和打包后都能够使用，你需要正确地检测图标路径
+        if getattr(sys, 'frozen', False):
+            # 如果是打包后的应用，使用系统的绝对路径
+            basedir = sys._MEIPASS
+        else:
+            # 如果是开发中的代码，使用当前目录的相对路径
+            basedir = '.'
+
+        icon_path = os.path.join(basedir, 'icon.ico')
+        self.setWindowIcon(QIcon(icon_path))
         self.setWindowTitle("CoA Assistant")
         # create splash screen
         self.splashScreen = SplashScreen(self.windowIcon(), self)

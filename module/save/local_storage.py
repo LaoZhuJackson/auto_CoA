@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 from typing import Any
 
@@ -9,8 +10,15 @@ class LocalStorage:
     """
 
     def __init__(self, name: str):
+        # 为了保证图标在开发和打包后都能够使用，你需要正确地检测图标路径
+        if getattr(sys, 'frozen', False):
+            # 如果是打包后的应用，使用系统的绝对路径
+            basedir = sys._MEIPASS
+        else:
+            # 如果是开发中的代码，使用当前目录的相对路径
+            basedir = '.'
         self.__json_file = name + ".json"
-
+        self.__json_file = os.path.join(basedir, self.__json_file)
         try:
             with open(self.__json_file, "r") as json_file:
                 self.__dict = json.load(json_file)
