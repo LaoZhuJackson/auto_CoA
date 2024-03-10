@@ -12,9 +12,9 @@ from app_front.card.comboboxsettingcard2 import ComboBoxSettingCard2
 from app_front.card.switchsettingcard import SwitchSettingCard1
 from app_front.common.style_sheet import StyleSheet
 from managers.config_manager import config
+from managers.operation_manager import click
+from managers.utilities_manager import utilities
 from method.task_thread import TaskThread
-from module.operation.click import Click
-from module.operation.ultilities import activate
 
 
 def get_current_function_name():
@@ -42,9 +42,6 @@ class FunctionInterface(ScrollArea):
         self.chosen_tasks = []
         # 线程对象初始化为none
         self.task_thread = None
-
-        # 原子操作
-        self.click = Click()
 
         # 开启组
         self.startGroup = SettingCardGroup(self.tr("开启"), self.scrollWidget)
@@ -203,7 +200,7 @@ class FunctionInterface(ScrollArea):
                 parent=self
             )
             # 激活窗口使窗口置顶
-            activate(self.task_thread.is_running)
+            click.activate_coa(self.task_thread.is_running)
             # logging.debug(f"start:{self.task_thread.isRunning()}")
             self.startup_card.button.setText('停止')
 
@@ -223,16 +220,37 @@ class FunctionInterface(ScrollArea):
         """
         logging.info(f"当前执行：{get_current_function_name()}")
         # 点击“开始游戏”
-        self.click.common_click("start_up\\start_game.png", self.task_thread.isRunning)
+        click.common_click("start_up\\start_game.png", self.task_thread.isRunning)
+        # 每次操作后都进行一次判断，实现每步操作都能被停止
         if not self.task_thread.isRunning:
             return
         # 判断是否在更新
-
-        # 判断是否出现更新中断
-
+        while utilities.is_exist("start_up\\download_resources.png") and self.task_thread.isRunning:
+            logging.info("等待更新游戏")
+            time.sleep(10)
+            # 判断是否出现更新中断
+            if utilities.is_exist("start_up\\retry.png"):
+                logging.info("尝试中断重连")
+                # 中断了就点重试
+                click.common_click("start_up\\retry.png", self.task_thread.isRunning, 1)
+                if not self.task_thread.isRunning:
+                    return
+        # 判断是否登录账号
+        if utilities.is_exist("start_up\\select_account.png", 1, 0.6):
+            click.common_click("start_up\\last_logon.png", self.task_thread.isRunning, 0.5)
+            if not self.task_thread.isRunning:
+                return
+        while utilities.is_exist("start_up\\login.png"):
+            logging.info("未登录账号")
+            time.sleep(5)
         # 关闭公告
-
-        # 进入游戏选择角色。。。
+        click.common_click("start_up\\cancel.png", self.task_thread.isRunning, 15)
+        if not self.task_thread.isRunning:
+            return
+        click.common_click("start_up\\click_to_continue.png", self.task_thread.isRunning, 5)
+        if not self.task_thread.isRunning:
+            return
+        # 进入到选择角色界面
 
     def double_potion_task(self):
         """
@@ -277,3 +295,12 @@ class FunctionInterface(ScrollArea):
         time.sleep(3)
         if not self.task_thread.isRunning:
             return
+
+    def select_character(self, num):
+        """
+        选择第num个角色
+        :param num:
+        :return:
+        """
+        # todo
+        pass
