@@ -2,9 +2,16 @@ import logging
 import os
 import sys
 import time
-from PIL import Image
+
+# import pywinauto.findwindows
+from PIL import Image, ImageChops
+import pygetwindow as gw
 
 import pyautogui
+# from pywinauto import Application, Desktop
+
+from managers.config_manager import config
+from managers.utilities_manager import utilities
 
 
 def is_valid_image_path(relative_path):
@@ -32,9 +39,9 @@ def is_valid_image_path(relative_path):
 
 class Click:
     def __init__(self):
-        self.path = None
-        self.timeout = 30
-        self.confidence = 0.7
+        self.game_path = config.get_item("game_path")
+        self.game_name = self.game_path.split('/')[-1]  # “晶核：魔导觉醒.exe”
+        self.game_title = self.game_name.split('.')[0]  # “晶核：魔导觉醒”
         # 为了保证资源路径在开发和打包后都正确
         if getattr(sys, 'frozen', False):
             # 如果是打包后的应用，使用系统的绝对路径
@@ -43,26 +50,75 @@ class Click:
             # 如果是开发中的代码，使用当前目录的相对路径
             self.basedir = 'image'
 
-    def common_click(self, image, is_running: bool, timeout=3, confidence=0.7):
-        start_time = time.time()
-        image_path = os.path.join(self.basedir, image)
-        while time.time() - start_time < timeout and is_running and is_valid_image_path(image_path):
-            try:
-                # 尝试定位界面中的特定图像
-                location = pyautogui.locateCenterOnScreen(image_path, confidence=confidence)
-                if location is not None:
-                    # 图像找到，执行点击，退出循环
-                    pyautogui.click(location)
-                    print("单击")
-                    time.sleep(0.3)
-                    break
-                # 图像未找到，等待一小段时间后重试
-                time.sleep(0.5)
-            except pyautogui.ImageNotFoundException:
-                # 如果跳过没有检测到图片就跳过
-                pass
+    def common_click(self, image, is_running: bool, timeout=1, confidence=0.7):
+        if utilities.is_exist(image):
+            start_time = time.time()
+            image_path = os.path.join(self.basedir, image)
+            timeout_flag = True
+            while time.time() - start_time < timeout and is_running and is_valid_image_path(image_path):
+                try:
+                    # 尝试定位界面中的特定图像
+                    location = pyautogui.locateCenterOnScreen(image_path, confidence=confidence)
+                    if location is not None:
+                        # 说明出现了能点的坐标
+                        logging.debug(str(location))
+                        box_area = (
+                        int(location[0] - 20), int(location[1] - 20), int(location[0] + 20), int(location[1] + 20))
+                        # 获取初始屏幕截图
+                        prev_image = pyautogui.screenshot(region=box_area)
+                        while time.time() - start_time < timeout:
+                            # 执行点击
+                            pyautogui.click(location)
+                            time.sleep(0.3)
+                            new_image = pyautogui.screenshot(region=box_area)
+                            # difference这个函数用于比较两幅图像，并生成一幅新图像,工作原理是对每个对应的像素进行相减操作。在结果图像中，如果两个输入图像在某个像素上完全相同，那么对应的结果图像上的该像素点将会是黑色（值为0）
+                            diff = ImageChops.difference(prev_image, new_image)
+                            if diff.getbbox() is not None:
+                                # 如果图像有变化则退出循环，说明点击生效了
+                                logging.debug("图像发生变化")
+                                timeout_flag = False
+                                break
+                            else:
+                                logging.debug("图像未检测出变化")
+                except pyautogui.ImageNotFoundException:
+                    # 图像未找到，等待一小段时间后重试
+                    time.sleep(0.5)
+            if timeout_flag:
+                logging.error("点击操作超时")
 
-    def alt_click(self,img_path, timeout=2, confidence=0.8):
+    def alt_click(self, image, is_running, timeout=2, confidence=0.8):
         pyautogui.keyDown('alt')
-        self.common_click()
+        self.common_click(image, is_running, timeout, confidence)
         pyautogui.keyUp('alt')
+
+    def activate_coa(self, is_running: bool):
+        """
+        激活游戏窗口使置顶
+        :param is_running:
+        :return:
+        """
+        logging.debug(f"activate:{is_running}")
+        if is_running:
+            try:
+                # app = Application(backend="uia").connect(path=self.game_title)
+                coa_window = gw.getWindowsWithTitle(self.game_title)[0]
+                # 激活窗口，使置顶
+                coa_window.activate()
+
+                # 获取当前桌面上的所有顶层窗口
+                # windows = Desktop(backend="uia").windows()
+                #
+                # 打印所有窗口的标题和进程ID
+                # for w in windows:
+                #     logging.debug(f"{w.window_text()}, {w.process_id()}")
+
+                # window = app.window(title=self.game_title)
+                # if window.is_minimized():
+                #     window.restore()
+                # 再点击一下窗口标题
+                self.common_click('receiving_resources\\title.png', is_running)
+            except IndexError:
+                logging.info(self.game_name)
+                logging.error("请先打开游戏启动器再运行")
+            # except pywinauto.findwindows.ElementNotFoundError:
+            #     logging.error(f"未能找到标题为{self.game_title}的窗口")

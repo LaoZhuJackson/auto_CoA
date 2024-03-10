@@ -15,7 +15,6 @@ with redirect_stdout(None):
     from qfluentwidgets import NavigationItemPosition, MSFluentWindow, SplashScreen, setThemeColor, \
         NavigationBarPushButton, toggleTheme, setTheme, darkdetect, Theme, ScrollArea
     from qfluentwidgets import FluentIcon as FIF
-    from qfluentwidgets import InfoBar, InfoBarPosition
 
 from app_front.home_interface import HomeInterface
 from app_front.setting_interface import SettingInterface
@@ -28,11 +27,13 @@ def open_game():
     game_dir = config.get_item("game_dir")  # 游戏的目录
     try:
         # 获取所有运行中的进程列表
-        tasks = subprocess.check_output(['tasklist']).decode('utf-8', 'ignore')
+        tasks = subprocess.check_output(['tasklist']).decode('gbk', 'ignore')
+        # logging.debug(tasks)
         # 获取文件名
-        exe_name = path.split('\\')[-1]
+        exe_name = path.split('/')[-1]
         # 检查.exe文件名是否在任务列表中
         if exe_name in tasks:
+
             logging.info("游戏已打开")
         else:
             # 需要设置工作目录，不然晶核会在python文件所在文件夹建立工作区
