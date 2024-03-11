@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "game_path": "D:/path/to/your/晶核：魔导觉醒.exe",
+  "check_update": false,
+  "double_enable": false,
+  "start_option": false,
+  "double_potion_option": false,
+  "tili_option": false,
+  "exchange_option": false,
+  "receive_option": false,
+  "auto_open": false,
+  "instance_type": "5-5",
+  "after_finish": "无",
+  "game_dir": ""
+}

@@ -17,7 +17,12 @@ class LocalStorage:
             with open(self.__json_file, "r") as json_file:
                 self.__dict = json.load(json_file)
         except FileNotFoundError:
-            self.__dict = {}
+            try:
+                sys_default = os.path.join(PathUtils.get_base_dir(), "sys_default.json")
+                with open(sys_default, "r") as json_file:
+                    self.__dict = json.load(json_file)
+            except FileNotFoundError:
+                self.__dict = {}
 
     def set_item(self, key: str, value: Any):
         """
